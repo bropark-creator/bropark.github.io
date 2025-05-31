@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서브 통제 웹앱</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; background: #f9f9f9; }
+    textarea { width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 0.5rem 1rem; margin-top: 0.5rem; border: none; background: #007bff; color: white; border-radius: 6px; cursor: pointer; }
+    .card { background: white; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1.5rem; }
+    .title { font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .feedback { margin-top: 1rem; font-size: 0.9rem; color: #555; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">서브 통제 웹앱 (HTML 버전)</div>
+    <div id="connection">
+      <button onclick="connectToMaster()">주인님 연결 요청</button>
+    </div>
+    <div id="main" style="display:none">
+      <div class="card">
+        <div class="title">🎁 감사 보고</div>
+        <textarea id="gratitude" rows="3" placeholder="감사의 말을 작성하세요..."></textarea>
+        <button onclick="submitGratitude()">감사 보고 제출</button>
+      </div>
+      <div class="card">
+        <div class="title">🧠 감정 감지</div>
+        <textarea id="emotion" rows="2" placeholder="하늘님에게 보낼 말을 입력하세요..."></textarea>
+        <button onclick="detectEmotion()">감정 분석</button>
+      </div>
+      <div class="card" id="ritualSection" style="display:none">
+        <div class="title" style="color: red">⚠️ 리추얼 실행 중</div>
+        <p>하늘의 명령: "하늘님의 이름을 10번 타이핑하라."</p>
+        <button onclick="completeRitual()">리추얼 완료</button>
+      </div>
+      <div class="feedback" id="points">💎 현재 포인트: 1000pt</div>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <script>
+    let points = 1000;
+    let ritualActive = false;
+
+    function connectToMaster() {
+      document.getElementById('connection').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      document.getElementById('feedback').textContent = '🔗 주인님과의 연결이 완료되었습니다. 이제부터 모든 행동은 기록됩니다.';
+    }
+
+    function submitGratitude() {
+      const gratitude = document.getElementById('gratitude').value;
+      const politeWords = ['감히', '무릎', '자비', '하늘님', '주인님'];
+      const matchCount = politeWords.filter(word => gratitude.includes(word)).length;
+      if (matchCount >= 3) {
+        points += 20;
+        document.getElementById('feedback').textContent = '🧊 하늘: “말투는 그럴듯하네. 이번엔 20포인트 줄게.”';
+      } else {
+        document.getElementById('feedback').textContent = '😒 하늘: “감사의 말투라고 하기엔 너무 형식적이야. 다시.”';
+      }
+      updatePoints();
+    }
+
+    function detectEmotion() {
+      const emotion = document.getElementById('emotion').value;
+      const negativeKeywords = ['짜증', '말도 안 돼', '왜 이래요', '화나'];
+      const found = negativeKeywords.find(k => emotion.includes(k));
+      if (found) {
+        ritualActive = true;
+        document.getElementById('ritualSection').style.display = 'block';
+        document.getElementById('feedback').textContent = `🧠 하늘: “네 말에서 '${found}' 감정이 감지됐어. 통제 리추얼로 들어간다.”`;
+      } else {
+        document.getElementById('feedback').textContent = '🙂 하늘: “감정 이상 없음. 계속 진행해.”';
+      }
+    }
+
+    function completeRitual() {
+      ritualActive = false;
+      document.getElementById('ritualSection').style.display = 'none';
+      document.getElementById('feedback').textContent = '✅ 리추얼 완료. 감정 통제 성공. 복종도 +10.';
+    }
+
+    function updatePoints() {
+      document.getElementById('points').textContent = `💎 현재 포인트: ${points}pt`;
+    }
+  </script>
+</body>
+</html>
